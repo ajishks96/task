@@ -1,0 +1,44 @@
+---
+- name: simple apache webserver
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: installation of httpd service
+    yum:
+      name: httpd
+      state: latest
+  - name: creating index file
+    file:
+      state: touch
+      path: /var/www/html/index.html
+  - name: copying of index file
+    copy: 
+      content: 'Assignment webpage'
+      dest: /var/www/html/index.html
+  - name: config file
+    file:
+      state: touch
+      path: /etc/httpd/conf.d/a.conf
+  - name: config file
+    blockinfile:
+      path: /etc/httpd/conf.d/a.conf
+      block: |
+        <virtualhost *:80>
+        servername .pnq.csb
+        documentroot /var/www/html
+        </virtualhost>
+        <directory /var/www/html>
+        require all granted
+        </directory>
+  - firewalld:
+      service: http
+      permanent: yes
+      state: enabled
+  - firewalld:
+      port: 80/tcp
+      permanent: yes
+      state: enabled
+  - name: restart httpd service
+    service:
+      name: httpd
+      state: restarted  
