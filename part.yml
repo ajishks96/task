@@ -1,0 +1,24 @@
+---
+- name: partition
+  hosts: localhost
+  tasks:
+  - parted:
+      device: /dev/vdb
+      number: 1
+      state: present
+      part_end: 10MiB
+      part_type: extended
+  - parted:
+      device: /dev/vdb
+      number: 2
+      state: present
+      flags: [ lvm ]
+      part_end: 10MiB
+      part_type: logical
+#  - name: Create a logical volume of 512m with disks /dev/sda and /dev/sdb
+#    lvol:
+#      pvs: /dev/vdb5
+#      vg: vg
+#      lv: lv
+#      size: 2m
+
