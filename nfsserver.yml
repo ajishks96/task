@@ -1,0 +1,35 @@
+---
+- name: nfs_mount
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: making nfs_ directory in server side
+    file:
+      path: /nfs1
+      state: directory
+      mode: '0755' 
+      owner: nfsnobody
+      group: nfsnobody
+      setype: public_content_t
+  - name: add file to exports folder
+    blockinfile:
+      path: /etc/exports
+      block: |
+        /nfs1 192.168.122.0/24(rw,sync)
+  - name: exporting from exports folder
+    command: exportfs -arv
+  - firewalld:
+      service: nfs
+      permanent: yes
+      state: enabled
+  - name: restart nfs_ service
+    service:
+      name: nfs
+      state: restarted
+      enabled: yes
+  - name: restart nfs_ server service
+    service:
+      name: nfs-server
+      state: restarted
+      enabled: yes
+
