@@ -17,10 +17,9 @@
       name: nfs-server
       state: restarted
       enabled: yes
-  - name: adding entry to fstab
-    blockinfile:
-      path: /etc/fstab
-      block: |
-        192.168.122.94:/nfs1    /nfs1   nfs     defaults        0       0 
-  - name: mounting
-    command: mount -a
+  - name: mount
+    mount:
+      src: 192.168.122.94:/nfs1
+      path: /nfs1
+      fstype: nfs
+      state: mounted
